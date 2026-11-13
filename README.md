@@ -22,3 +22,6 @@ A simple focus timer designed to help me stay focused, take breaks, and manage m
 3. Start focusing!
 
 Built as a simple personal project to make focused work a little easier.
+
+
+#Mahesh Pawar 🤍
