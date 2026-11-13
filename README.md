@@ -24,4 +24,4 @@ A simple focus timer designed to help me stay focused, take breaks, and manage m
 Built as a simple personal project to make focused work a little easier.
 
 
-# Mahesh Pawar 🤍
+ Mahesh Pawar 🤍
