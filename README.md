@@ -18,7 +18,7 @@ A simple focus timer designed to help me stay focused, take breaks, and manage m
 
 ### Run Locally
 1. Clone this repository.
-2. Open `index.html` in your browser.
+2. Open `Aura.html` in your browser.
 3. Start focusing!
 
 Built as a simple personal project to make focused work a little easier.
