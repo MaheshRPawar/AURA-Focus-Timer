@@ -1,0 +1,636 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURA — Focus Timer</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+    --bg: #171916;
+    --surface: #20231f;
+    --text: #e9e9df;
+    --muted: #858a7e;
+    --accent: #a7b99a;
+    --line: #353a32;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 18px;
+}
+
+button {
+    font: inherit;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+.app {
+    width: 100%;
+    max-width: 440px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 65px;
+}
+
+.logo {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 5px;
+}
+
+.logo span {
+    color: var(--accent);
+}
+
+.header-note {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.modes {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 45px;
+}
+
+.mode {
+    padding: 10px 17px;
+    border-radius: 30px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    transition: 0.25s ease;
+}
+
+.mode:hover {
+    color: var(--text);
+}
+
+.mode.active {
+    background: var(--surface);
+    color: var(--accent);
+}
+
+.timer-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 42px;
+}
+
+.timer-ring {
+    width: 280px;
+    height: 280px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.timer-ring svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.track {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1.5;
+}
+
+.progress {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 816.8;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.5s linear;
+}
+
+.timer-content {
+    text-align: center;
+    z-index: 1;
+}
+
+.time {
+    font-family: 'DM Mono', monospace;
+    font-size: 57px;
+    font-weight: 400;
+    letter-spacing: -3px;
+    font-variant-numeric: tabular-nums;
+}
+
+.timer-label {
+    margin-top: 12px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 17px;
+    margin-bottom: 65px;
+}
+
+.control-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--muted);
+    display: grid;
+    place-items: center;
+    transition: 0.2s ease;
+    font-size: 16px;
+}
+
+.control-btn:hover {
+    color: var(--text);
+    background: #292e27;
+    transform: translateY(-2px);
+}
+
+.main-btn {
+    min-width: 145px;
+    height: 50px;
+    border-radius: 30px;
+    background: var(--accent);
+    color: #1b2118;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: 0.2s ease;
+}
+
+.main-btn:hover {
+    background: #bac9ae;
+    transform: translateY(-2px);
+}
+
+.main-btn:active,
+.control-btn:active {
+    transform: scale(0.97);
+}
+
+.bottom {
+    border-top: 1px solid var(--line);
+    padding-top: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 17px;
+}
+
+.sound-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sound-control select {
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+}
+
+.sound-control select option {
+    background: var(--surface);
+    color: var(--text);
+}
+
+.sound-toggle {
+    background: transparent;
+    color: var(--muted);
+    font-size: 16px;
+    transition: 0.2s;
+}
+
+.sound-toggle.active {
+    color: var(--accent);
+}
+
+.footer {
+    text-align: center;
+    color: #62675d;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    margin-top: 65px;
+}
+
+@media (max-width: 480px) {
+    header {
+        margin-bottom: 55px;
+    }
+
+    .timer-ring {
+        width: 255px;
+        height: 255px;
+    }
+
+    .time {
+        font-size: 51px;
+    }
+
+    .controls {
+        margin-bottom: 55px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="app">
+
+    <header>
+        <div class="logo">AU<span>R</span>A</div>
+        <div class="header-note">Make time count</div>
+    </header>
+
+    <section class="modes">
+        <button class="mode active" data-mode="focus">Focus</button>
+        <button class="mode" data-mode="short">Short break</button>
+        <button class="mode" data-mode="long">Long break</button>
+    </section>
+
+    <section class="timer-section">
+        <div class="timer-ring">
+
+            <svg viewBox="0 0 280 280">
+                <circle class="track" cx="140" cy="140" r="130"/>
+                <circle class="progress" id="progress" cx="140" cy="140" r="130"/>
+            </svg>
+
+            <div class="timer-content">
+                <div class="time" id="time">25:00</div>
+                <div class="timer-label" id="timerLabel">Ready to focus</div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="controls">
+        <button class="control-btn" id="resetBtn" title="Reset">↺</button>
+        <button class="main-btn" id="startBtn">START</button>
+        <button class="control-btn" id="soundBtn" title="Sound">♪</button>
+    </section>
+
+    <section class="bottom">
+
+        <div>
+            <div class="stat-label">Today's focus</div>
+            <div class="stat-value" id="dailyTime">00:00</div>
+        </div>
+
+        <div class="sound-control">
+            <select id="soundSelect">
+                <option value="rain">Rain</option>
+                <option value="noise">White noise</option>
+                <option value="waves">Waves</option>
+            </select>
+        </div>
+
+    </section>
+
+    <div class="footer">SLOW DOWN · FOCUS · REPEAT</div>
+
+</main>
+
+<script>
+const durations = {
+    focus: 25 * 60,
+    short: 5 * 60,
+    long: 15 * 60
+};
+
+let currentMode = 'focus';
+let remaining = durations.focus;
+let timerInterval = null;
+let endTime = null;
+let running = false;
+let audioContext = null;
+let soundSource = null;
+let soundGain = null;
+let soundActive = false;
+
+const timeDisplay = document.getElementById('time');
+const timerLabel = document.getElementById('timerLabel');
+const startBtn = document.getElementById('startBtn');
+const resetBtn = document.getElementById('resetBtn');
+const progress = document.getElementById('progress');
+const dailyTime = document.getElementById('dailyTime');
+const soundBtn = document.getElementById('soundBtn');
+const soundSelect = document.getElementById('soundSelect');
+
+const circumference = 2 * Math.PI * 130;
+progress.style.strokeDasharray = circumference;
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+
+    return String(minutes).padStart(2, '0') + ':' +
+           String(secs).padStart(2, '0');
+}
+
+function getTodayKey() {
+    const date = new Date();
+    return 'aura-focus-' +
+        date.getFullYear() + '-' +
+        date.getMonth() + '-' +
+        date.getDate();
+}
+
+function getDailySeconds() {
+    return Number(localStorage.getItem(getTodayKey())) || 0;
+}
+
+function updateDailyTime() {
+    const seconds = getDailySeconds();
+    dailyTime.textContent =
+        formatTime(Math.floor(seconds / 60) * 60 + seconds % 60);
+}
+
+function updateDisplay() {
+    timeDisplay.textContent = formatTime(remaining);
+
+    const percentage = remaining / durations[currentMode];
+    progress.style.strokeDashoffset =
+        circumference * (1 - percentage);
+}
+
+function updateButton() {
+    startBtn.textContent = running ? 'PAUSE' : 'START';
+}
+
+function updateLabel() {
+    if (currentMode === 'focus') {
+        timerLabel.textContent = running ? 'Stay focused' : 'Ready to focus';
+    } else {
+        timerLabel.textContent = running ? 'Take a breath' : 'Take a break';
+    }
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    running = false;
+    endTime = null;
+    updateButton();
+    updateLabel();
+}
+
+function startTimer() {
+    if (running) {
+        pauseTimer();
+        return;
+    }
+
+    if (remaining <= 0) {
+        remaining = durations[currentMode];
+    }
+
+    running = true;
+    endTime = Date.now() + remaining * 1000;
+
+    updateButton();
+    updateLabel();
+
+    timerInterval = setInterval(() => {
+        const newRemaining = Math.max(
+            0,
+            Math.ceil((endTime - Date.now()) / 1000)
+        );
+
+        const elapsed = remaining - newRemaining;
+
+        if (currentMode === 'focus' && elapsed > 0) {
+            const previous = Number(window.lastRecordedElapsed || 0);
+            const difference = elapsed - previous;
+
+            if (difference > 0) {
+                const total = getDailySeconds() + difference;
+                localStorage.setItem(getTodayKey(), total);
+                window.lastRecordedElapsed = elapsed;
+                updateDailyTime();
+            }
+        }
+
+        remaining = newRemaining;
+        updateDisplay();
+
+        if (remaining <= 0) {
+            stopTimer();
+            timerLabel.textContent = 'Session complete';
+            startBtn.textContent = 'RESTART';
+            window.lastRecordedElapsed = 0;
+            playCompletionSound();
+        }
+    }, 200);
+}
+
+function pauseTimer() {
+    if (!running) return;
+
+    remaining = Math.max(
+        0,
+        Math.ceil((endTime - Date.now()) / 1000)
+    );
+
+    if (currentMode === 'focus') {
+        window.lastRecordedElapsed = 0;
+    }
+
+    stopTimer();
+    updateDisplay();
+}
+
+function resetTimer() {
+    stopTimer();
+    remaining = durations[currentMode];
+    window.lastRecordedElapsed = 0;
+    updateDisplay();
+}
+
+function changeMode(mode) {
+    stopTimer();
+
+    currentMode = mode;
+    remaining = durations[mode];
+    window.lastRecordedElapsed = 0;
+
+    document.querySelectorAll('.mode').forEach(button => {
+        button.classList.toggle(
+            'active',
+            button.dataset.mode === mode
+        );
+    });
+
+    updateDisplay();
+    updateLabel();
+}
+
+document.querySelectorAll('.mode').forEach(button => {
+    button.addEventListener('click', () => {
+        changeMode(button.dataset.mode);
+    });
+});
+
+startBtn.addEventListener('click', startTimer);
+resetBtn.addEventListener('click', resetTimer);
+
+function createSound(type) {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+
+    if (soundSource) {
+        soundSource.stop();
+        soundSource.disconnect();
+    }
+
+    const bufferSize = audioContext.sampleRate * 3;
+    const buffer = audioContext.createBuffer(
+        1,
+        bufferSize,
+        audioContext.sampleRate
+    );
+
+    const data = buffer.getChannelData(0);
+
+    for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+    }
+
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+
+    const filter = audioContext.createBiquadFilter();
+    filter.type = 'lowpass';
+
+    if (type === 'rain') {
+        filter.frequency.value = 900;
+    } else if (type === 'waves') {
+        filter.frequency.value = 350;
+    } else {
+        filter.frequency.value = 4000;
+    }
+
+    const gain = audioContext.createGain();
+    gain.gain.value = 0.12;
+
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioContext.destination);
+
+    source.start();
+
+    soundSource = source;
+    soundGain = gain;
+}
+
+function toggleSound() {
+    if (!soundActive) {
+        createSound(soundSelect.value);
+        soundActive = true;
+        soundBtn.classList.add('active');
+    } else {
+        if (soundSource) {
+            soundSource.stop();
+            soundSource.disconnect();
+            soundSource = null;
+        }
+
+        soundActive = false;
+        soundBtn.classList.remove('active');
+    }
+}
+
+soundBtn.addEventListener('click', toggleSound);
+
+soundSelect.addEventListener('change', () => {
+    if (soundActive) {
+        createSound(soundSelect.value);
+    }
+});
+
+function playCompletionSound() {
+    if (!audioContext) return;
+
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    oscillator.frequency.value = 660;
+    gain.gain.value = 0.12;
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+
+    oscillator.start();
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioContext.currentTime + 0.8
+    );
+
+    oscillator.stop(audioContext.currentTime + 0.8);
+}
+
+updateDisplay();
+updateDailyTime();
+</script>
+
+</body>
+</html>
